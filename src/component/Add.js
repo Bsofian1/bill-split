@@ -12,6 +12,15 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import users from "../data/usersData";
 
+import IconButton from "@material-ui/core/IconButton";
+
+//date
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+
 const names = users.map((user) => user.name);
 
 const Add = (props) => {
@@ -27,7 +36,13 @@ const Add = (props) => {
 
   return (
     <div>
-      <button onClick={handleClickOpen}>Add</button>
+      <IconButton
+        style={{ backgroundColor: "#00bcd4", minWidth: 50, minHeight: 50, color: "white" }}
+        color="primary"
+        onClick={handleClickOpen}
+      >
+        +
+      </IconButton>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -35,8 +50,9 @@ const Add = (props) => {
       >
         <DialogTitle id="form-dialog-title">Add a new expense</DialogTitle>
         <DialogContent>
-          <form onSubmit={props.handleSubmit}>
+          <form style={{ minWidth: 300 }} onSubmit={props.handleSubmit}>
             <TextField
+              fullWidth
               type="text"
               id="standard-basic"
               label="Expense Name"
@@ -46,6 +62,7 @@ const Add = (props) => {
             />
             <br />
             <TextField
+              fullWidth
               type="number"
               id="standard-basic2"
               label="Amount"
@@ -53,6 +70,25 @@ const Add = (props) => {
               value={props.totalAmount}
               onChange={(event) => props.onChange(event)}
             />
+            <br />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                fullWidth
+                disableToolbar
+                style={{ paddingBottom: 30 }}
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                id="date-picker-inline"
+                label="Date picker inline"
+                value={props.date}
+                onChange={(event) => props.handleDateChange(event)}
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+            </MuiPickersUtilsProvider>
+
             <br />
             <InputLabel id="demo-mutiple-checkbox-label">Paid by</InputLabel>
             <Select
@@ -68,7 +104,10 @@ const Add = (props) => {
               ))}
             </Select>
             <br />
-            <InputLabel id="demo-mutiple-checkbox-label1">
+            <InputLabel
+              style={{ paddingTop: 30 }}
+              id="demo-mutiple-checkbox-label1"
+            >
               Shared with
             </InputLabel>
             <Select
@@ -90,7 +129,9 @@ const Add = (props) => {
             </Select>
             <br />
 
-            <button>Submit</button>
+            <button style={{ marginTop: 30 }} onClick={handleClose}>
+              Submit
+            </button>
           </form>
         </DialogContent>
         <DialogActions></DialogActions>

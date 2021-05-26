@@ -7,6 +7,25 @@ import Main from "./component/Main";
 
 let currentUser = user[0];
 let expenses = [];
+let users = user;
+
+function dispatchExpense(expense) {
+  let findOwner = expense.ownerExpense;
+  let findIndexOwner;
+  users.forEach((user, index) => {
+    if (findOwner === user.name) {
+      findIndexOwner = index;
+    }
+  });
+  users[findIndexOwner].amountPayed.push(parseInt(expense.totalAmount));
+  let numberOfUserExpense= expense.userExpense.length
+  let arrOfExpense = expense.userExpense
+  users.forEach((user) => {
+    if (arrOfExpense.includes(user.name)) {
+      user.restToPay.push(parseInt(expense.totalAmount / numberOfUserExpense));
+    }
+  });
+}
 
 class App extends React.Component {
   constructor() {
@@ -37,9 +56,22 @@ class App extends React.Component {
     });
   }
 
+  handleDateChange(event) {
+    let [month, date, year] = event.toLocaleDateString("en-US").split("/");
+    this.setState(() => {
+      return {
+        date: `${month}/${date}/${year}`,
+      };
+    });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
+    let newExp = this.state;
+    dispatchExpense(newExp);
+
     expenses.push(this.state);
+
     this.setState({
       expenseName: "",
       totalAmount: null,
@@ -50,14 +82,16 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(users);
     return (
       <div className="App">
         <Header user={currentUser} />
-        <Main data={expenses} />
+        <Main dataExpenses={expenses} />
         <Add
           handleSubmit={this.handleSubmit}
           onChange={(value) => this.handleChange(value)}
           onMultiChange={(value) => this.handleMultiChange(value)}
+          handleDateChange={(value) => this.handleDateChange(value)}
           {...this.state}
         />
       </div>
